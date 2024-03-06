@@ -5,9 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - Wall
   - FireLoad
   - WaterLoad
+  - Fire
+  - Water
   layers:
   - Default
   - TransparentFX
