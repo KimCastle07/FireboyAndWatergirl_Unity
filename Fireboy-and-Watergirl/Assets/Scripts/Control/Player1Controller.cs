@@ -1,51 +1,22 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Player1Controller : Player
 {
-    private void Awake()
+    protected override void Init()
     {
-        Init();
+        base.Init();
+
+        isPlayer1 = true;
     }
 
     private void Update()
     {
-        Move();
-        Jump();
+        Move(Input.GetAxis("Horizontal"));
+        Jump(Input.GetKeyDown(KeyCode.UpArrow));
     }
-    protected override void Init() => base.Init();
 
-    protected override void Move() => base.Move();
-
-    protected override void Jump() => base.Jump();
-
-    protected override void HeadAnimation(float horizontal, float positionY) => base.HeadAnimation(horizontal, positionY);
-
-    protected override void BodyAnimation(float horizontal) => base.BodyAnimation(horizontal);
-
-    protected void OnCollisionEnter2D(Collision2D collision)
+    protected override void Die()
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isJump = false;
-            isGround = true;
-        }
+        Destroy(gameObject);
     }
-
-    protected void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGround = false;
-        }
-    }
-
-    protected void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("WaterLoad"))
-        {
-            Die();
-        }
-    }
-
 }
