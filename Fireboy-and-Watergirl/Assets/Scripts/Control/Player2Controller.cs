@@ -5,7 +5,7 @@ public class Player2Controller : Player
     protected override void Init()
     {
         base.Init();
-
+        
         isPlayer1 = false;
     }
 

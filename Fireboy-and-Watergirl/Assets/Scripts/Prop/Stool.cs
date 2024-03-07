@@ -2,12 +2,14 @@ using UnityEngine;
 
 public class Stool : MonoBehaviour
 {
-    private float currentPosY;
     private float moveSpeed = 1f;
-    private bool isStandPlatform = false;
+    private float currentPosY;
+    private bool isStandPlatform;
 
     private Rigidbody2D rigid;
 
+    [HideInInspector] public bool isStandWall;
+    
     private void Start()
     {
         currentPosY = transform.position.y;
@@ -29,6 +31,11 @@ public class Stool : MonoBehaviour
             isStandPlatform = true;
             rigid.gravityScale = 1f;
         }
+
+        if (collision.collider.CompareTag("Ground"))
+        {
+            isStandWall = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -37,6 +44,11 @@ public class Stool : MonoBehaviour
         {
             isStandPlatform = false;
             rigid.gravityScale = 0f;
+        }
+
+        if (collision.collider.CompareTag("Ground"))
+        {
+            isStandWall = false;
         }
     }
 }

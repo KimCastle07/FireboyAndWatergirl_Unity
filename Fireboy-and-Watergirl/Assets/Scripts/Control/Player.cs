@@ -24,7 +24,7 @@ public abstract class Player : MonoBehaviour
 
         headAni = transform.Find("Head").GetComponent<Animator>();
         bodyAni = transform.Find("Body").GetComponent<Animator>();
-
+        
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -58,7 +58,7 @@ public abstract class Player : MonoBehaviour
         {
             rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
             isJump = true;
-
+            
             headAni.SetTrigger("Jump");
         }
     }
