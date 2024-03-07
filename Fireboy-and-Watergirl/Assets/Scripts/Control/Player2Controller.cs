@@ -10,6 +10,7 @@ public class Player2Controller : Player
     }
     private void Update()
     {
+        Debug.Log(isJump);
         Move();
         Jump();
     }
@@ -26,6 +27,9 @@ public class Player2Controller : Player
         newVector.y += rb.velocity.y;
         rb.velocity = newVector;
 
+        headAni = transform.Find("Head").GetComponent<Animator>();
+        bodyAni = transform.Find("Body").GetComponent<Animator>();
+
     }
     protected override void Jump()
     {
@@ -38,6 +42,57 @@ public class Player2Controller : Player
             }
         }
     }
+
+    protected override void HeadAnimation(float horizontal, float positionY)
+    {
+        float x = headAni.transform.position.x;
+        headAni.transform.Rotate(x switch
+        {
+            _ when x < headAni.transform.position.x => new Vector3(0, 180, 0),
+            _ => Vector3.zero
+        });
+
+        if (isJump)
+        {
+            headAni.SetBool("isJump", true);
+        }
+        else
+        {
+            headAni.SetBool("isJump", false);
+        }
+
+        headAni.SetBool("isMove", horizontal switch
+        {
+            _ when horizontal != 0 => true,
+            _ => false
+        });
+
+        headAni.SetInteger("Jump", positionY switch
+        {
+            _ when positionY < transform.position.y - 0.0001f => -1,
+            _ when positionY > transform.position.y + 0.0001f => 1,
+            _ => 0
+        });
+    }
+
+    protected override void BodyAnimation(float horizontal)
+    {
+        float x = headAni.transform.position.x;
+        bodyAni.transform.Rotate(x switch
+        {
+            _ when x < 0 => new Vector3(0, 180, 0),
+            _ => Vector3.zero
+        });
+
+        bodyAni.SetBool("isJump", isJump);
+
+        bodyAni.SetBool("isMove", horizontal switch
+        {
+            _ when horizontal != 0 => true,
+            _ => false
+        });
+    }
+
     protected void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))

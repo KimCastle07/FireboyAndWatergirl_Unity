@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     protected bool isJump;
     protected bool isGround;
 
+    [SerializeField] protected Animator headAni;
+    [SerializeField] protected Animator bodyAni;
+    protected float runCheak;
     private void Awake()
     {
         Init();
@@ -25,19 +28,52 @@ public class Player : MonoBehaviour
         isJump = false;
         isGround = false;
         rb = GetComponent<Rigidbody2D>();
+        headAni = transform.Find("Head").GetComponent<Animator>();
+        bodyAni = transform.Find("Body").GetComponent<Animator>();
+
     }
 
     protected virtual void Move()
     {
-        float h = Input.GetAxis("Horizontal");
-
-        Vector2 vector = new Vector2(h, 0).normalized;
+        float horizontal = Input.GetAxis("Horizontal");
+        float positionY = transform.position.y + 0.00001f;
+        Vector2 vector = new Vector2(horizontal, 0).normalized;
 
         vector = transform.TransformDirection(vector);
 
         Vector2 newVector = vector * speed;
         newVector.y += rb.velocity.y;
         rb.velocity = newVector;
+        HeadAnimation(horizontal, positionY);
+        BodyAnimation(horizontal);
+    }
+
+    protected virtual void HeadAnimation(float horizontal, float positionY)
+    {
+        Debug.Log(horizontal);
+        if (!isJump)
+        {
+            headAni.SetFloat("Run", horizontal);
+            
+        }
+
+        if (horizontal == 0){ headAni.SetBool("RunCheck", false); }
+        else { headAni.SetBool("RunCheck",true); }
+
+        if (positionY > transform.position.y && isJump) 
+        {
+            headAni.SetBool("JumpDown", true);
+        }
+            headAni.SetBool("Jump", isJump);
+
+
+    }
+
+    protected virtual void BodyAnimation(float horizontal)
+    {
+        //if (Input.GetKey(KeyCode.LeftArrow)) { headAni.SetBool("L_Run", true); }
+        //if (Input.GetKey(KeyCode.LeftArrow)) { headAni.SetBool("R_Run", true); }
+        //bodyAni.SetBool("Jump", isJump);
 
     }
 
