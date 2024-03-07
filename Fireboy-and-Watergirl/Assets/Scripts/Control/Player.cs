@@ -28,8 +28,8 @@ public class Player : MonoBehaviour
         isJump = false;
         isGround = false;
         rb = GetComponent<Rigidbody2D>();
-        headAni = transform.Find("Head").GetComponent<Animator>();
-        bodyAni = transform.Find("Body").GetComponent<Animator>();
+       // headAni = transform.Find("Head").GetComponent<Animator>();
+       // bodyAni = transform.Find("Body").GetComponent<Animator>();
 
     }
 
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         Debug.Log(horizontal);
         if (!isJump)
         {
-            headAni.SetFloat("Run", horizontal);
+           // headAni.SetFloat("Run", horizontal);
             
         }
 

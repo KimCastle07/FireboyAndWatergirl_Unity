@@ -27,8 +27,8 @@ public class Player2Controller : Player
         newVector.y += rb.velocity.y;
         rb.velocity = newVector;
 
-        headAni = transform.Find("Head").GetComponent<Animator>();
-        bodyAni = transform.Find("Body").GetComponent<Animator>();
+        //headAni = transform.Find("Head").GetComponent<Animator>();
+        //bodyAni = transform.Find("Body").GetComponent<Animator>();
 
     }
     protected override void Jump()
