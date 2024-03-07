@@ -1,42 +1,46 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public abstract class Player : MonoBehaviour
 {
-    protected Rigidbody2D rb;
-
     protected float speed = 5f;
     protected float jump = 5f;
+
     protected bool isJump;
     protected bool isGround;
+    protected bool isPlayer1;
 
-    [SerializeField] protected Animator headAni;
-    [SerializeField] protected Animator bodyAni;
-    protected float runCheak;
+    protected Animator headAni;
+    protected Animator bodyAni;
+
+    protected Rigidbody2D rb;
+
     private void Awake()
-    {
-        Init();
-    }
+        => Init();
 
-    void Update()
-    {
-        Move();
-        Jump();
-    }
     protected virtual void Init()
     {
         isJump = false;
         isGround = false;
-        rb = GetComponent<Rigidbody2D>();
-       // headAni = transform.Find("Head").GetComponent<Animator>();
-       // bodyAni = transform.Find("Body").GetComponent<Animator>();
 
+        headAni = transform.Find("Head").GetComponent<Animator>();
+        bodyAni = transform.Find("Body").GetComponent<Animator>();
+        
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    protected virtual void Move()
+    protected void Move(float KeyPress)
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float positionY = transform.position.y + 0.00001f;
+        float horizontal = KeyPress;
+
+        if (horizontal > -0.1f && horizontal < 0.1f)
+        {
+            headAni.SetBool("IsRun", false);
+        }
+        else
+        {
+            headAni.SetBool("IsRun", true);
+        }
+
         Vector2 vector = new Vector2(horizontal, 0).normalized;
 
         vector = transform.TransformDirection(vector);
@@ -44,55 +48,54 @@ public class Player : MonoBehaviour
         Vector2 newVector = vector * speed;
         newVector.y += rb.velocity.y;
         rb.velocity = newVector;
-        HeadAnimation(horizontal, positionY);
-        BodyAnimation(horizontal);
+
+        headAni.SetFloat("Run", horizontal);
     }
 
-    protected virtual void HeadAnimation(float horizontal, float positionY)
+    protected void Jump(bool KeyPress)
     {
-        Debug.Log(horizontal);
-        if (!isJump)
+        if (false == isJump && KeyPress)
         {
-           // headAni.SetFloat("Run", horizontal);
+            rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
+            isJump = true;
             
+            headAni.SetTrigger("Jump");
         }
+    }
 
-        if (horizontal == 0){ headAni.SetBool("RunCheck", false); }
-        else { headAni.SetBool("RunCheck",true); }
-
-        if (positionY > transform.position.y && isJump) 
+    protected void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            headAni.SetBool("JumpDown", true);
+            isJump = false;
+            isGround = true;
+
+            headAni.SetBool("IsAir", false);
         }
-            headAni.SetBool("Jump", isJump);
-
-
     }
 
-    protected virtual void BodyAnimation(float horizontal)
+    protected void OnCollisionExit2D(Collision2D collision)
     {
-        //if (Input.GetKey(KeyCode.LeftArrow)) { headAni.SetBool("L_Run", true); }
-        //if (Input.GetKey(KeyCode.LeftArrow)) { headAni.SetBool("R_Run", true); }
-        //bodyAni.SetBool("Jump", isJump);
-
-    }
-
-    protected virtual void Jump()
-    {
-        if (!isJump)
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
-                isJump = true;
-            }
+            isGround = false;
+
+            headAni.SetBool("IsAir", true);
         }
     }
 
-    protected virtual void Die()
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        Destroy(gameObject);
-        //openPopup<게임오버>;
+        if (true == isPlayer1 && collider.CompareTag("WaterLoad"))
+        {
+            Die();
+        }
+
+        if (false == isPlayer1 && collider.CompareTag("FireLoad"))
+        {
+            Die();
+        }
     }
-    
+
+    protected abstract void Die();
 }
