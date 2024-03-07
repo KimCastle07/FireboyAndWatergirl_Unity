@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Player1Controller : Player
 {
@@ -17,6 +18,10 @@ public class Player1Controller : Player
     protected override void Move() => base.Move();
 
     protected override void Jump() => base.Jump();
+
+    protected override void HeadAnimation(float horizontal, float positionY) => base.HeadAnimation(horizontal, positionY);
+
+    protected override void BodyAnimation(float horizontal) => base.BodyAnimation(horizontal);
 
     protected void OnCollisionEnter2D(Collision2D collision)
     {
